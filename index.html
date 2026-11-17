@@ -3,155 +3,417 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101116">
-<title>Nexus OS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b14">
+<title>Nexus</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-:root{--bg:#101116;--panel:#1b1d29;--text:#f5f4fa;--muted:#999aaa;--accent:#a78bfa;--line:#ffffff16}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
-.wall{position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 80% 10%,#7656b83b,transparent 40%),radial-gradient(ellipse at 10% 90%,#286f7930,transparent 40%),#101116}
-header{height:58px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#10111699;backdrop-filter:blur(15px)}
-.brand{font:700 14px 'Space Grotesk';letter-spacing:3px;display:flex;align-items:center;gap:10px}
-.logo{background:var(--accent);color:#171322;padding:6px 9px;border-radius:8px}
-#clock{font-size:12px;color:var(--muted)}
-main{width:min(1050px,90%);margin:65px auto 110px}
-.eyebrow{font-size:10px;letter-spacing:2px;color:var(--accent);font-weight:700}
-h1{font:600 clamp(38px,7vw,64px)/1.1 'Space Grotesk';letter-spacing:-3px;margin:10px 0}
-h1 span{color:var(--accent)}
-.muted{color:var(--muted);font-size:14px;line-height:1.7}
-.search{margin-top:27px;width:min(520px,100%);height:50px;border:1px solid var(--line);background:#20212d;border-radius:12px;display:flex;align-items:center;padding:0 15px;gap:12px}
-.search input{background:none;border:0;outline:0;color:white;flex:1;font:inherit;min-width:0}
-#results{width:min(520px,100%);background:#222431;border:1px solid var(--line);border-radius:10px;position:absolute;z-index:3}
-#results button{display:block;width:100%;text-align:left;padding:12px;background:none;border:0;color:white;cursor:pointer}
-#results button:hover{background:#ffffff15}
-.apps{display:flex;gap:25px;flex-wrap:wrap;margin:40px 0}
-.app{background:none;border:0;color:white;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:11px;cursor:pointer}
-.app span:first-child{width:57px;height:57px;border-radius:17px;display:grid;place-items:center;font-size:24px;background:linear-gradient(145deg,#b49aff,#5942a1);box-shadow:0 8px 25px #0005}
-.app:nth-child(2) span:first-child{background:linear-gradient(145deg,#62cbb3,#246d77)}
-.app:nth-child(3) span:first-child{background:linear-gradient(145deg,#f1a477,#a54f67)}
-.app:nth-child(4) span:first-child{background:linear-gradient(145deg,#79a9ed,#405ba9)}
-.panels{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
-.panel{padding:25px;border:1px solid var(--line);background:#1b1d29d9;border-radius:17px}
-h2{font:600 21px 'Space Grotesk';margin:8px 0}
-.primary{display:inline-block;margin-top:12px;background:var(--accent);color:#171322;text-decoration:none;padding:12px 17px;border-radius:9px;font-weight:700;font-size:12px}
-.quick{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding:14px 0;font-size:12px}
-.quick a{color:var(--accent);text-decoration:none}
-.dock{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:9px;background:#242431dd;border:1px solid var(--line);border-radius:15px;backdrop-filter:blur(15px)}
-.dock button{width:39px;height:39px;border:0;border-radius:10px;background:transparent;color:white;font-size:17px;cursor:pointer}
-.dock button:hover{background:#ffffff20}
-.window{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:15px;z-index:5}
-.window.show{display:flex}
-.dialog{width:min(550px,100%);max-height:80vh;overflow:auto;background:#1c1e2a;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 25px 90px #0009}
-.dialog-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:12px}
-.dialog-head h2{margin:0}
-.close{border:0;background:#ffffff15;color:white;border-radius:8px;padding:7px 12px;cursor:pointer}
-.field{width:100%;padding:12px;background:#101116;border:1px solid var(--line);border-radius:9px;color:white;margin:8px 0}
-.action{padding:11px 14px;background:var(--accent);border:0;border-radius:9px;color:#171322;font-weight:700;cursor:pointer}
-.item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px}
-.item button{background:none;color:#f29caa;border:0;cursor:pointer}
-footer{text-align:center;color:#777989;font-size:10px;margin-top:30px;letter-spacing:1px}
-@media(max-width:650px){main{margin-top:45px}.panels{grid-template-columns:1fr}.apps{justify-content:space-between;gap:12px}.panel{padding:20px}header{padding:0 15px}h1{letter-spacing:-2px}}
+:root {
+  --accent: #8b7cff;
+  --bg: #090b14;
+  --panel: rgba(23,25,42,.88);
+  --border: rgba(255,255,255,.09);
+  --muted: #999bb5;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: white;
+  font-family: Inter, system-ui, Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 15% 15%, #282052 0, transparent 45%),
+    radial-gradient(ellipse at 85% 80%, #142b43 0, transparent 45%),
+    var(--bg);
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+.topbar {
+  height: 66px;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(9,11,20,.65);
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.logo { font-size: 22px; font-weight: 850; letter-spacing: -1px; }
+.logo span { color: var(--accent); }
+.clock { color: var(--muted); font-size: 13px; }
+main { width: min(1100px, 90%); margin: 55px auto; }
+.greeting { margin-bottom: 30px; }
+.greeting h1 { font-size: clamp(30px,5vw,46px); margin: 0 0 8px; letter-spacing: -1.5px; }
+.greeting p { color: var(--muted); margin: 0; }
+.search {
+  width: 100%; padding: 17px 20px; border-radius: 15px;
+  border: 1px solid var(--border); outline: none;
+  color: white; background: var(--panel); margin-bottom: 35px;
+}
+.search:focus { border-color: var(--accent); }
+.section-title {
+  font-size: 17px; font-weight: 750; margin: 28px 0 15px;
+}
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(145px,1fr));
+  gap: 14px;
+}
+.app {
+  text-align: left; color: white; padding: 19px;
+  border: 1px solid var(--border); border-radius: 17px;
+  background: var(--panel); transition: .2s;
+  min-height: 125px;
+}
+.app:hover { transform: translateY(-4px); border-color: var(--accent); }
+.app-icon { font-size: 30px; display: block; margin-bottom: 13px; }
+.app-name { font-weight: 750; display: block; }
+.app-desc { color: var(--muted); font-size: 12px; margin-top: 5px; display: block; }
+.featured {
+  border: 1px solid rgba(139,124,255,.4);
+  background: linear-gradient(120deg,rgba(139,124,255,.19),rgba(23,25,42,.9));
+  border-radius: 20px; padding: 22px; margin-bottom: 30px;
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+}
+.featured h2 { margin: 0 0 7px; }
+.featured p { color: var(--muted); margin: 0; font-size: 13px; }
+.primary {
+  border: 0; border-radius: 11px; padding: 12px 18px;
+  color: white; font-weight: 750; background: var(--accent);
+}
+.secondary {
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 9px 13px; color: white; background: rgba(255,255,255,.07);
+}
+.window {
+  display: none; position: fixed; z-index: 10;
+  inset: 4vh 3vw; background: #10121e;
+  border: 1px solid var(--border); border-radius: 17px;
+  overflow: hidden; box-shadow: 0 20px 90px #000b;
+}
+.window.open { display: flex; flex-direction: column; }
+.window-head {
+  min-height: 55px; padding: 9px 14px; display: flex;
+  align-items: center; gap: 10px; justify-content: space-between;
+  background: #17192a; border-bottom: 1px solid var(--border);
+}
+.window-title { font-weight: 750; }
+.window-actions { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+.window-content { flex: 1; min-height: 0; overflow: auto; }
+.window-content iframe { width: 100%; height: 100%; border: 0; background: white; }
+.notice { padding: 9px 14px; color: var(--muted); font-size: 12px; background: #17192a; }
+.panel-content { padding: 24px; }
+.panel-content input {
+  width: 100%; padding: 12px; color: white;
+  background: #202237; border: 1px solid var(--border);
+  border-radius: 10px; margin: 8px 0 12px;
+}
+.item {
+  padding: 13px; margin: 8px 0; border: 1px solid var(--border);
+  border-radius: 11px; display: flex; justify-content: space-between;
+  align-items: center; gap: 10px;
+}
+.item button { color: white; background: #292c43; border: 0; padding: 7px 10px; border-radius: 8px; }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 35px 0; }
+.toast {
+  position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+  padding: 12px 18px; border-radius: 12px; background: #25283e;
+  border: 1px solid var(--border); display: none; z-index: 30;
+}
+.empty { color: var(--muted); font-size: 13px; padding: 12px 0; }
+@media(max-width:600px) {
+  main { margin-top: 35px; }
+  .featured { align-items: flex-start; flex-direction: column; }
+  .window { inset: 1vh 1vw; }
+  .clock { font-size: 11px; }
+}
 </style>
 </head>
 <body>
-<div class="wall"></div>
-<header>
- <div class="brand"><span class="logo">N</span> NEXUS</div>
- <div id="clock"></div>
- <button class="close" onclick="changeTheme()">◐ Theme</button>
+<header class="topbar">
+  <div class="logo">NEXUS<span>.</span></div>
+  <div class="clock" id="clock"></div>
 </header>
+
 <main>
- <p class="eyebrow">YOUR PERSONAL WEB SPACE</p>
- <h1>Welcome to <span>Nexus.</span></h1>
- <p class="muted">Your anime, games, and favorite websites. All in one place.</p>
- <div class="search">⌕ <input id="search" placeholder="Search Nexus..." oninput="searchApps()"><span style="color:#999">/</span></div>
- <div id="results"></div>
+  <section class="greeting">
+    <h1>Your space. Your world.</h1>
+    <p>Everything you need, all in one place.</p>
+  </section>
 
- <section class="apps">
-  <button class="app" onclick="openApp('anime')"><span>▶</span>Anime</button>
-  <button class="app" onclick="openApp('watchlist')"><span>▤</span>Watchlist</button>
-  <button class="app" onclick="openApp('games')"><span>🎮</span>Games</button>
-  <button class="app" onclick="openApp('webapps')"><span>◈</span>Web Apps</button>
- </section>
+  <input class="search" id="search" placeholder="Search apps, games and websites..." autocomplete="off">
 
- <section class="panels">
-  <article class="panel">
-   <p class="eyebrow">FEATURED DESTINATION</p>
-   <h2>Your anime corner.</h2>
-   <p class="muted">Your anime destination is one click away. Keep track of what you want to watch with your personal watchlist.</p>
-   <a class="primary" href="https://anisakura.xyz/" target="_blank" rel="noopener">Open AniSakura ↗</a>
-  </article>
-  <article class="panel">
-   <p class="eyebrow">QUICK ACCESS</p>
-   <h2>Jump back in.</h2>
-   <div class="quick"><span>AniSakura</span><a href="https://anisakura.xyz/" target="_blank" rel="noopener">Open ↗</a></div>
-   <div class="quick"><span>My Watchlist</span><a href="#" onclick="openApp('watchlist');return false">View →</a></div>
-  </article>
- </section>
- <footer>NEXUS OS · YOUR BROWSER, YOUR SPACE</footer>
+  <section class="featured">
+    <div>
+      <h2>🌸 AniSakura</h2>
+      <p>Your anime destination, built directly into Nexus.</p>
+    </div>
+    <button class="primary" onclick="openApp('anime')">Open AniSakura ↗</button>
+  </section>
+
+  <div class="section-title">Your apps</div>
+  <div class="grid" id="apps"></div>
+
+  <div class="section-title">Favorites</div>
+  <div class="grid" id="favorites"></div>
+
+  <div class="section-title">Recently opened</div>
+  <div class="grid" id="recent"></div>
 </main>
 
-<nav class="dock">
- <button onclick="location.reload()" title="Home">N</button>
- <button onclick="openApp('anime')" title="Anime">▶</button>
- <button onclick="openApp('watchlist')" title="Watchlist">▤</button>
- <button onclick="openApp('games')" title="Games">🎮</button>
- <button onclick="openApp('webapps')" title="Web Apps">◈</button>
-</nav>
+<footer>NEXUS 2.0 · Your personal web space</footer>
 
-<div class="window" id="window" onclick="if(event.target===this)closeApp()">
- <div class="dialog">
-  <div class="dialog-head"><h2 id="windowTitle"></h2><button class="close" onclick="closeApp()">✕</button></div>
-  <div id="windowContent"></div>
- </div>
+<div class="window" id="window">
+  <div class="window-head">
+    <div class="window-title" id="windowTitle">Nexus</div>
+    <div class="window-actions">
+      <button class="secondary" id="refreshBtn" onclick="refreshFrame()">↻ Refresh</button>
+      <button class="secondary" id="backBtn" onclick="goBack()">← Back</button>
+      <button class="secondary" id="externalBtn" onclick="openExternal()">↗ Open separately</button>
+      <button class="secondary" onclick="fullscreen()">⛶</button>
+      <button class="secondary" onclick="closeWindow()">✕</button>
+    </div>
+  </div>
+  <div class="window-content" id="windowContent"></div>
+  <div class="notice" id="notice"></div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
-const key='nexus-watchlist';
-let watchlist=JSON.parse(localStorage.getItem(key)||'[]');
-let theme=0;
-const themes=['#a78bfa','#77cbb4','#f0ad83','#83b5f2'];
-function changeTheme(){theme=(theme+1)%themes.length;document.documentElement.style.setProperty('--accent',themes[theme]);}
-function openApp(name){
- const w=document.getElementById('window'),t=document.getElementById('windowTitle'),c=document.getElementById('windowContent');
- w.classList.add('show');
- if(name==='anime'){
-  t.textContent='Anime';
-  c.innerHTML='<p class="muted">Your anime destination is ready.</p><a class="primary" href="https://anisakura.xyz/" target="_blank" rel="noopener">Launch AniSakura ↗</a><p class="muted">AniSakura opens in a new tab if its player does not allow embedding.</p>';
- }else if(name==='watchlist'){
-  t.textContent='My Watchlist';
-  renderList();
- }else if(name==='games'){
-  t.textContent='Games';
-  c.innerHTML='<p class="muted">Your games library is ready to customize. Add links to browser games you are allowed to access.</p>';
- }else{
-  t.textContent='Web Apps';
-  c.innerHTML='<p class="muted">Your web apps.</p><p><a class="primary" href="https://www.wikipedia.org/" target="_blank">Wikipedia ↗</a></p><p><a class="primary" href="https://www.photopea.com/" target="_blank">Photopea ↗</a></p>';
- }
+const APPS = [
+  {id:'anime',name:'AniSakura',icon:'🌸',desc:'Watch anime',url:'https://anisakura.xyz/',embed:true},
+  {id:'games',name:'Games',icon:'🎮',desc:'Browse game websites',panel:true},
+  {id:'web',name:'Web Apps',icon:'🌐',desc:'Useful websites',panel:true},
+  {id:'watchlist',name:'Watchlist',icon:'📺',desc:'Save anime and shows',panel:true},
+  {id:'settings',name:'Settings',icon:'⚙️',desc:'Customize Nexus',panel:true}
+];
+
+const GAMES = [
+  {name:'Lichess',url:'https://lichess.org/',desc:'Online chess'},
+  {name:'Chess.com',url:'https://www.chess.com/',desc:'Play chess'},
+  {name:'itch.io',url:'https://itch.io/games/html5',desc:'Browser games'}
+];
+
+const WEBSITES = [
+  {name:'Photopea',url:'https://www.photopea.com/',desc:'Online image editor'},
+  {name:'Wikipedia',url:'https://www.wikipedia.org/',desc:'Online encyclopedia'},
+  {name:'Neal.fun',url:'https://neal.fun/',desc:'Interactive experiments'}
+];
+
+let favorites = load('nexus_favorites',[]);
+let recent = load('nexus_recent',[]);
+let watchlist = load('nexus_watchlist',[]);
+let current = null;
+let currentUrl = null;
+
+function load(key,fallback) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return value ?? fallback;
+  } catch { return fallback; }
 }
-function closeApp(){document.getElementById('window').classList.remove('show')}
-function renderList(){
- const c=document.getElementById('windowContent');
- c.innerHTML='<p class="muted">Saved in this browser on this device.</p><form onsubmit="addAnime(event)"><input class="field" id="animeName" placeholder="Enter an anime title" maxlength="100" required><button class="action">＋ Add anime</button></form><div id="items"></div>';
- const box=document.getElementById('items');
- if(!watchlist.length)box.innerHTML='<p class="muted">Nothing saved yet. Add your first anime above!</p>';
- watchlist.forEach((name,i)=>{const row=document.createElement('div');row.className='item';const label=document.createElement('span');label.textContent=name;const del=document.createElement('button');del.textContent='Remove';del.onclick=()=>{watchlist.splice(i,1);save();renderList()};row.append(label,del);box.append(row)});
+
+function save(key,value) {
+  try { localStorage.setItem(key,JSON.stringify(value)); }
+  catch { notify('Your browser could not save this change.'); }
 }
-function addAnime(e){e.preventDefault();const input=document.getElementById('animeName');const name=input.value.trim();if(name&&!watchlist.some(x=>x.toLowerCase()===name.toLowerCase())){watchlist.unshift(name);save();renderList()}else alert('That anime is already on your list.')}
-function save(){localStorage.setItem(key,JSON.stringify(watchlist))}
-function searchApps(){
- const q=document.getElementById('search').value.toLowerCase().trim(),r=document.getElementById('results');
- const apps=[['Anime','anime'],['AniSakura','anime'],['Watchlist','watchlist'],['Games','games'],['Web Apps','webapps']];
- r.innerHTML='';
- if(!q)return;
- apps.filter(x=>x[0].toLowerCase().includes(q)).forEach(x=>{const b=document.createElement('button');b.textContent=x[0];b.onclick=()=>{openApp(x[1]);r.innerHTML='';document.getElementById('search').value=''};r.append(b)});
+
+function notify(message) {
+  const el = document.getElementById('toast');
+  el.textContent = message;
+  el.style.display = 'block';
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(()=>el.style.display='none',2300);
 }
-function clock(){document.getElementById('clock').textContent=new Date().toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
-clock();setInterval(clock,30000);
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeApp();if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();document.getElementById('search').focus()}});
+
+function card(app) {
+  const isFav = favorites.includes(app.id);
+  return `<button class="app" onclick="openApp('${app.id}')">
+    <span class="app-icon">${app.icon}</span>
+    <span class="app-name">${app.name}</span>
+    <span class="app-desc">${app.desc}</span>
+    <span class="app-desc">${isFav?'★ Favorite':'☆ Add to favorites'}</span>
+  </button>`;
+}
+
+function render() {
+  const query = document.getElementById('search').value.toLowerCase().trim();
+  const filtered = APPS.filter(a=>(a.name+' '+a.desc).toLowerCase().includes(query));
+  document.getElementById('apps').innerHTML = filtered.map(card).join('') || '<div class="empty">No apps found.</div>';
+  document.getElementById('favorites').innerHTML = favorites.map(id=>APPS.find(a=>a.id===id)).filter(Boolean).map(card).join('') || '<div class="empty">Your favorites will appear here.</div>';
+  document.getElementById('recent').innerHTML = recent.map(id=>APPS.find(a=>a.id===id)).filter(Boolean).map(card).join('') || '<div class="empty">Your recently opened apps will appear here.</div>';
+}
+
+function remember(id) {
+  recent = [id,...recent.filter(x=>x!==id)].slice(0,5);
+  save('nexus_recent',recent);
+  render();
+}
+
+function openApp(id) {
+  const app = APPS.find(a=>a.id===id);
+  if(!app) return;
+  current = app;
+  currentUrl = app.url || null;
+  remember(id);
+
+  document.getElementById('window').classList.add('open');
+  document.getElementById('windowTitle').textContent = app.icon+' '+app.name;
+  document.getElementById('windowContent').innerHTML = '';
+  document.getElementById('notice').textContent = '';
+  document.getElementById('externalBtn').style.display = app.url ? 'inline-block':'none';
+  document.getElementById('refreshBtn').style.display = app.embed ? 'inline-block':'none';
+  document.getElementById('backBtn').style.display = app.embed ? 'inline-block':'none';
+
+  if(app.id==='anime') showFrame(app.url);
+  if(app.id==='games') showLinks(GAMES);
+  if(app.id==='web') showLinks(WEBSITES);
+  if(app.id==='watchlist') showWatchlist();
+  if(app.id==='settings') showSettings();
+}
+
+function showFrame(url) {
+  const frame = document.createElement('iframe');
+  frame.src = url;
+  frame.allow = 'fullscreen; autoplay; encrypted-media; picture-in-picture';
+  frame.allowFullscreen = true;
+  frame.referrerPolicy = 'strict-origin-when-cross-origin';
+  document.getElementById('windowContent').appendChild(frame);
+  document.getElementById('notice').textContent =
+    'If the site or a video player refuses to load here, use “Open separately”. Some third-party sites restrict embedding.';
+}
+
+function showLinks(items) {
+  const box = document.createElement('div');
+  box.className = 'panel-content';
+  box.innerHTML = '<h2>Explore</h2><p class="empty">Choose a website to open in a new tab.</p>';
+  items.forEach(item=>{
+    const row = document.createElement('div');
+    row.className='item';
+    const info=document.createElement('div');
+    const title=document.createElement('strong');
+    title.textContent=item.name;
+    const desc=document.createElement('div');
+    desc.className='empty';
+    desc.textContent=item.desc;
+    info.append(title,desc);
+    const btn=document.createElement('button');
+    btn.textContent='Open ↗';
+    btn.onclick=()=>window.open(item.url,'_blank','noopener,noreferrer');
+    row.append(info,btn);
+    box.appendChild(row);
+  });
+  document.getElementById('windowContent').appendChild(box);
+}
+
+function showWatchlist() {
+  const box=document.createElement('div');
+  box.className='panel-content';
+  box.innerHTML='<h2>My Watchlist</h2><p class="empty">Keep track of anime and shows you want to watch.</p>';
+  const input=document.createElement('input');
+  input.placeholder='Enter an anime or show title...';
+  input.id='watchInput';
+  const add=document.createElement('button');
+  add.className='primary';
+  add.textContent='Add to watchlist';
+  add.onclick=()=>{
+    const title=input.value.trim();
+    if(!title) return;
+    watchlist.push(title);
+    save('nexus_watchlist',watchlist);
+    openApp('watchlist');
+    notify('Added to your watchlist!');
+  };
+  box.append(input,add);
+  watchlist.forEach((title,index)=>{
+    const row=document.createElement('div');
+    row.className='item';
+    const name=document.createElement('span');
+    name.textContent=title;
+    const remove=document.createElement('button');
+    remove.textContent='Remove';
+    remove.onclick=()=>{
+      watchlist.splice(index,1);
+      save('nexus_watchlist',watchlist);
+      openApp('watchlist');
+    };
+    row.append(name,remove);
+    box.appendChild(row);
+  });
+  document.getElementById('windowContent').appendChild(box);
+}
+
+function showSettings() {
+  const box=document.createElement('div');
+  box.className='panel-content';
+  box.innerHTML='<h2>Customize Nexus</h2><p class="empty">Choose your accent color.</p>';
+  const colors=['#8b7cff','#36b8a0','#e77cae','#e6a34d','#5b9df5'];
+  colors.forEach(color=>{
+    const btn=document.createElement('button');
+    btn.style.cssText=`background:${color};width:38px;height:38px;border:0;border-radius:50%;margin:7px;cursor:pointer`;
+    btn.onclick=()=>{
+      document.documentElement.style.setProperty('--accent',color);
+      localStorage.setItem('nexus_accent',color);
+    };
+    box.appendChild(btn);
+  });
+  const reset=document.createElement('button');
+  reset.className='secondary';
+  reset.textContent='Reset saved Nexus data';
+  reset.style.display='block';
+  reset.style.marginTop='25px';
+  reset.onclick=()=>{
+    if(confirm('Delete your favorites, history and watchlist?')){
+      ['nexus_favorites','nexus_recent','nexus_watchlist'].forEach(k=>localStorage.removeItem(k));
+      favorites=[];recent=[];watchlist=[];
+      render();openApp('settings');notify('Nexus data reset.');
+    }
+  };
+  box.appendChild(reset);
+  document.getElementById('windowContent').appendChild(box);
+}
+
+function closeWindow() {
+  document.getElementById('window').classList.remove('open');
+  document.getElementById('windowContent').innerHTML='';
+  current=null;
+}
+
+function refreshFrame() {
+  const frame=document.querySelector('#windowContent iframe');
+  if(frame) frame.src=frame.src;
+}
+
+function goBack() {
+  notify('Browser history is controlled by the embedded website. Use its own back button if available.');
+}
+
+function openExternal() {
+  if(currentUrl) window.open(currentUrl,'_blank','noopener,noreferrer');
+}
+
+function fullscreen() {
+  const frame=document.querySelector('#windowContent iframe');
+  if(frame && frame.requestFullscreen) frame.requestFullscreen();
+  else document.getElementById('window').requestFullscreen?.();
+}
+
+document.getElementById('search').addEventListener('input',render);
+
+document.getElementById('clock').textContent='';
+function updateClock() {
+  document.getElementById('clock').textContent =
+    new Date().toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+}
+updateClock();
+setInterval(updateClock,30000);
+
+const savedAccent=localStorage.getItem('nexus_accent');
+if(savedAccent) document.documentElement.style.setProperty('--accent',savedAccent);
+
+render();
 </script>
 </body>
 </html>
-
