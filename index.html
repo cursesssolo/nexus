@@ -1,419 +1,259 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090b14">
-<title>Nexus</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nexus">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<meta name="description" content="Nexus 3.4 — your personal web space and built-in arcade.">
+<title>Nexus — Version 3.4</title>
 <style>
-:root {
-  --accent: #8b7cff;
-  --bg: #090b14;
-  --panel: rgba(23,25,42,.88);
-  --border: rgba(255,255,255,.09);
-  --muted: #999bb5;
+:root{
+  color-scheme:dark;
+  --bg:#0b1020;--panel:rgba(18,25,45,.84);--panel-solid:#12192d;--panel-soft:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.085);--text:#f4f5ff;--muted:#9ba5c1;--accent:#9a83ff;--accent-rgb:154,131,255;
+  --accent-soft:rgba(var(--accent-rgb),.15);--shadow:0 24px 80px rgba(0,0,0,.42);--radius:20px;--sidebar:246px;
+  --wall-a:#171d3a;--wall-b:#0b1020;--wall-c:#152d3a;
 }
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: white;
-  font-family: Inter, system-ui, Arial, sans-serif;
-  background:
-    radial-gradient(ellipse at 15% 15%, #282052 0, transparent 45%),
-    radial-gradient(ellipse at 85% 80%, #142b43 0, transparent 45%),
-    var(--bg);
-}
-button, input { font: inherit; }
-button { cursor: pointer; }
-.topbar {
-  height: 66px;
-  padding: 0 5%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  background: rgba(9,11,20,.65);
-  backdrop-filter: blur(20px);
-  position: sticky;
-  top: 0;
-  z-index: 5;
-}
-.logo { font-size: 22px; font-weight: 850; letter-spacing: -1px; }
-.logo span { color: var(--accent); }
-.clock { color: var(--muted); font-size: 13px; }
-main { width: min(1100px, 90%); margin: 55px auto; }
-.greeting { margin-bottom: 30px; }
-.greeting h1 { font-size: clamp(30px,5vw,46px); margin: 0 0 8px; letter-spacing: -1.5px; }
-.greeting p { color: var(--muted); margin: 0; }
-.search {
-  width: 100%; padding: 17px 20px; border-radius: 15px;
-  border: 1px solid var(--border); outline: none;
-  color: white; background: var(--panel); margin-bottom: 35px;
-}
-.search:focus { border-color: var(--accent); }
-.section-title {
-  font-size: 17px; font-weight: 750; margin: 28px 0 15px;
-}
-.grid {
-  display: grid; grid-template-columns: repeat(auto-fit,minmax(145px,1fr));
-  gap: 14px;
-}
-.app {
-  text-align: left; color: white; padding: 19px;
-  border: 1px solid var(--border); border-radius: 17px;
-  background: var(--panel); transition: .2s;
-  min-height: 125px;
-}
-.app:hover { transform: translateY(-4px); border-color: var(--accent); }
-.app-icon { font-size: 30px; display: block; margin-bottom: 13px; }
-.app-name { font-weight: 750; display: block; }
-.app-desc { color: var(--muted); font-size: 12px; margin-top: 5px; display: block; }
-.featured {
-  border: 1px solid rgba(139,124,255,.4);
-  background: linear-gradient(120deg,rgba(139,124,255,.19),rgba(23,25,42,.9));
-  border-radius: 20px; padding: 22px; margin-bottom: 30px;
-  display: flex; justify-content: space-between; align-items: center; gap: 20px;
-}
-.featured h2 { margin: 0 0 7px; }
-.featured p { color: var(--muted); margin: 0; font-size: 13px; }
-.primary {
-  border: 0; border-radius: 11px; padding: 12px 18px;
-  color: white; font-weight: 750; background: var(--accent);
-}
-.secondary {
-  border: 1px solid var(--border); border-radius: 10px;
-  padding: 9px 13px; color: white; background: rgba(255,255,255,.07);
-}
-.window {
-  display: none; position: fixed; z-index: 10;
-  inset: 4vh 3vw; background: #10121e;
-  border: 1px solid var(--border); border-radius: 17px;
-  overflow: hidden; box-shadow: 0 20px 90px #000b;
-}
-.window.open { display: flex; flex-direction: column; }
-.window-head {
-  min-height: 55px; padding: 9px 14px; display: flex;
-  align-items: center; gap: 10px; justify-content: space-between;
-  background: #17192a; border-bottom: 1px solid var(--border);
-}
-.window-title { font-weight: 750; }
-.window-actions { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
-.window-content { flex: 1; min-height: 0; overflow: auto; }
-.window-content iframe { width: 100%; height: 100%; border: 0; background: white; }
-.notice { padding: 9px 14px; color: var(--muted); font-size: 12px; background: #17192a; }
-.panel-content { padding: 24px; }
-.panel-content input {
-  width: 100%; padding: 12px; color: white;
-  background: #202237; border: 1px solid var(--border);
-  border-radius: 10px; margin: 8px 0 12px;
-}
-.item {
-  padding: 13px; margin: 8px 0; border: 1px solid var(--border);
-  border-radius: 11px; display: flex; justify-content: space-between;
-  align-items: center; gap: 10px;
-}
-.item button { color: white; background: #292c43; border: 0; padding: 7px 10px; border-radius: 8px; }
-footer { text-align: center; color: var(--muted); font-size: 12px; padding: 35px 0; }
-.toast {
-  position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-  padding: 12px 18px; border-radius: 12px; background: #25283e;
-  border: 1px solid var(--border); display: none; z-index: 30;
-}
-.empty { color: var(--muted); font-size: 13px; padding: 12px 0; }
-@media(max-width:600px) {
-  main { margin-top: 35px; }
-  .featured { align-items: flex-start; flex-direction: column; }
-  .window { inset: 1vh 1vw; }
-  .clock { font-size: 11px; }
-}
+*{box-sizing:border-box}
+html{min-width:320px;scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ background:radial-gradient(ellipse at 14% 10%,var(--wall-a),transparent 42%),radial-gradient(ellipse at 88% 80%,var(--wall-c),transparent 42%),linear-gradient(135deg,var(--wall-b),#080b14 75%);background-attachment:fixed}
+button,input,textarea,select{font:inherit}button{color:inherit;cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+button:disabled{opacity:.45;cursor:not-allowed}.hidden{display:none!important}
+.app-shell{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr)}
+.sidebar{position:sticky;top:0;height:100vh;padding:24px 16px 18px;border-right:1px solid var(--line);background:rgba(8,12,25,.55);backdrop-filter:blur(24px);display:flex;flex-direction:column;z-index:5}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 10px 28px;font-size:19px;font-weight:850;letter-spacing:-.8px}
+.brand-mark{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#50c7d7);display:grid;place-items:center;color:#101322;font-weight:950;box-shadow:0 6px 24px rgba(var(--accent-rgb),.26)}
+.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px;font-weight:700;margin-top:-2px}
+.nav-label{padding:12px 11px 7px;color:#737f9e;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.nav{display:grid;gap:5px}.nav-btn{border:1px solid transparent;background:transparent;text-align:left;border-radius:12px;padding:11px 12px;color:var(--muted);display:flex;align-items:center;gap:12px;transition:background .18s,border-color .18s,color .18s}
+.nav-btn:hover,.nav-btn.active{background:var(--accent-soft);border-color:rgba(var(--accent-rgb),.18);color:var(--text)}.nav-icon{width:21px;text-align:center;font-size:16px}
+.sidebar-bottom{margin-top:auto}.side-note{margin:14px 7px 0;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--panel-soft);color:var(--muted);font-size:11px}
+.side-note strong{display:block;color:var(--text);font-size:12px;margin-bottom:3px}
+.main{min-width:0;padding:22px clamp(18px,4vw,54px) 50px;max-width:1600px;width:100%;margin:0 auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:34px}
+.mobile-brand{display:none;font-weight:850;font-size:18px;letter-spacing:-.7px}.mobile-brand span{color:var(--accent)}
+.search-wrap{position:relative;flex:1;max-width:560px}.search-icon{position:absolute;top:50%;left:16px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search{width:100%;height:46px;padding:0 80px 0 43px;border:1px solid var(--line);border-radius:14px;background:rgba(14,20,37,.72);color:var(--text);outline:none;transition:border .18s,background .18s}
+.search:focus{border-color:rgba(var(--accent-rgb),.6);background:rgba(14,20,37,.95)}.search::placeholder{color:#75809d}
+.shortcut{position:absolute;right:11px;top:50%;transform:translateY(-50%);padding:3px 7px;border:1px solid var(--line);border-radius:6px;color:#7f8aa8;font-size:10px}
+.top-actions{display:flex;align-items:center;gap:10px}.network-pill{padding:6px 9px;border:1px solid var(--line);border-radius:999px;background:var(--panel-soft);color:var(--muted);font-size:10px;white-space:nowrap}.network-pill.offline{color:#ffb2ad;border-color:rgba(255,120,120,.3)}.clock{text-align:right;color:var(--muted);font-size:11px;line-height:1.3}.clock strong{display:block;color:var(--text);font-size:13px;font-weight:700}
+.icon-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:12px;background:var(--panel-soft);display:grid;place-items:center;font-size:16px}.icon-btn:hover{border-color:rgba(var(--accent-rgb),.55);background:var(--accent-soft)}
+.view{display:none;animation:fadeUp .28s ease}.view.active{display:block}@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.eyebrow{color:var(--accent);font-size:10px;letter-spacing:1.7px;font-weight:850;text-transform:uppercase;margin-bottom:9px}
+h1,h2,h3,p{margin-top:0}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:27px}.hero h1{font-size:clamp(29px,4.2vw,48px);letter-spacing:-2px;line-height:1.08;margin:0 0 10px;font-weight:820}.hero p{color:var(--muted);margin:0}.hero-date{color:var(--muted);font-size:12px;text-align:right;white-space:nowrap;padding-bottom:4px}
+.feature{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;padding:clamp(20px,3vw,32px);margin-bottom:32px;border:1px solid rgba(var(--accent-rgb),.3);border-radius:24px;background:linear-gradient(110deg,rgba(var(--accent-rgb),.18),rgba(19,26,48,.88) 56%,rgba(19,33,49,.82));box-shadow:0 16px 50px rgba(0,0,0,.16)}
+.feature:after{content:"✦";position:absolute;right:24%;top:-47px;font-size:180px;line-height:1;color:rgba(255,255,255,.035);pointer-events:none}.feature-copy{position:relative;z-index:1}.feature-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;background:rgba(var(--accent-rgb),.19);border:1px solid rgba(var(--accent-rgb),.22);border-radius:30px;color:#d9d1ff;font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;margin-bottom:12px}.feature h2{font-size:clamp(22px,3vw,31px);letter-spacing:-1px;margin:0 0 7px}.feature p{max-width:520px;color:#b7bfd7;margin:0}.feature-actions{display:flex;gap:9px;flex-wrap:wrap;position:relative;z-index:1}
+.primary,.secondary,.danger{border:1px solid transparent;border-radius:11px;padding:10px 15px;font-weight:750;transition:transform .15s,filter .15s,background .15s}.primary{background:var(--accent);color:#101222;box-shadow:0 7px 22px rgba(var(--accent-rgb),.25)}.primary:hover,.secondary:hover,.danger:hover{transform:translateY(-1px);filter:brightness(1.08)}.secondary{background:rgba(255,255,255,.06);border-color:var(--line);color:var(--text)}.danger{background:rgba(255,93,116,.12);border-color:rgba(255,93,116,.22);color:#ff9ba9}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:30px 0 14px}.section-head h2{font-size:16px;letter-spacing:-.3px;margin:0}.section-head p{font-size:11px;color:var(--muted);margin:3px 0 0}.text-btn{border:0;background:transparent;color:var(--accent);font-size:12px;font-weight:750;padding:7px}.text-btn:hover{text-decoration:underline}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:13px}.app-card{position:relative;min-height:150px;border:1px solid var(--line);border-radius:17px;padding:17px;background:linear-gradient(145deg,rgba(26,34,58,.83),rgba(15,21,39,.86));text-align:left;transition:transform .18s,border-color .18s,background .18s;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden}.app-card:hover{transform:translateY(-3px);border-color:rgba(var(--accent-rgb),.47);background:linear-gradient(145deg,rgba(var(--accent-rgb),.12),rgba(15,21,39,.94))}.app-card:focus-visible{outline-offset:2px}.app-open{border:0;background:transparent;padding:0;display:flex;flex-direction:column;align-items:flex-start;gap:0;width:100%;min-height:100%;flex:1;color:inherit;text-align:left}.app-open:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:8px}.app-card .app-icon{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;background:var(--accent-soft);font-size:23px;margin-bottom:15px}.app-card strong{font-size:13px;margin-bottom:4px}.app-card small{color:var(--muted);font-size:11px;line-height:1.4}.favorite-btn{position:absolute;right:11px;top:11px;width:28px;height:28px;border-radius:9px;border:1px solid transparent;background:transparent;color:#8290ae;font-size:17px}.favorite-btn:hover{background:var(--panel-soft);border-color:var(--line)}.favorite-btn.is-favorite{color:#ffd36f}
+.empty{grid-column:1/-1;padding:22px;border:1px dashed var(--line);border-radius:15px;color:var(--muted);font-size:12px;text-align:center}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:21px 0}.stat{padding:15px 17px;border:1px solid var(--line);border-radius:15px;background:var(--panel-soft)}.stat span{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}.stat strong{font-size:20px;letter-spacing:-.6px}
+.library-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:17px 0}.chip{border:1px solid var(--line);border-radius:30px;padding:7px 12px;background:var(--panel-soft);color:var(--muted);font-size:11px}.chip.active,.chip:hover{background:var(--accent-soft);color:var(--text);border-color:rgba(var(--accent-rgb),.3)}
+.content-panel{padding:22px;border:1px solid var(--line);border-radius:19px;background:var(--panel)}.content-panel h2{font-size:19px;margin:0 0 7px}.muted{color:var(--muted)}.small{font-size:11px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.field{width:100%;border:1px solid var(--line);border-radius:11px;background:rgba(5,10,22,.55);color:var(--text);padding:11px 12px;outline:none}.field:focus{border-color:rgba(var(--accent-rgb),.6)}textarea.field{min-height:190px;resize:vertical;line-height:1.55}.form-row{display:flex;gap:9px;align-items:center;margin-top:14px}.form-row .field{flex:1;min-width:0}
+.watch-item,.recent-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.watch-item:last-child,.recent-item:last-child{border:0}.item-name{flex:1;min-width:0;overflow-wrap:anywhere}.item-name strong{display:block;font-size:12px}.item-name small{color:var(--muted);font-size:10px}.mini-btn{border:1px solid var(--line);background:var(--panel-soft);border-radius:8px;padding:6px 9px;font-size:11px}.mini-btn:hover{border-color:rgba(var(--accent-rgb),.45)}
+.setting-group{padding:17px 0;border-bottom:1px solid var(--line)}.setting-group:last-child{border:0}.setting-title{font-weight:750;font-size:12px;margin-bottom:10px}.swatches{display:flex;gap:10px;flex-wrap:wrap}.swatch{width:30px;height:30px;border:2px solid rgba(255,255,255,.32);border-radius:50%;box-shadow:0 0 0 2px transparent}.swatch[aria-pressed="true"]{box-shadow:0 0 0 2px var(--text)}.wallpapers{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:9px}.wallpaper{height:63px;border:2px solid transparent;border-radius:11px}.wallpaper[aria-pressed="true"]{border-color:var(--text);box-shadow:0 0 0 2px var(--accent)}
+.window-backdrop{position:fixed;inset:0;background:rgba(1,4,12,.72);backdrop-filter:blur(10px);z-index:20;display:none;align-items:center;justify-content:center;padding:clamp(8px,2vw,24px)}.window-backdrop.open{display:flex}.app-window{width:min(1180px,100%);height:min(790px,94vh);min-height:min(440px,92vh);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.15);border-radius:19px;background:#0d1425;box-shadow:var(--shadow);animation:windowIn .2s ease}@keyframes windowIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.window-head{min-height:55px;padding:9px 13px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);background:#111a2e}.window-title{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:800;min-width:0}.window-title span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.window-controls{display:flex;align-items:center;gap:6px}.window-controls button{height:32px;min-width:33px;padding:0 9px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.05);font-size:11px}.window-controls button:hover{background:var(--accent-soft);border-color:rgba(var(--accent-rgb),.35)}.window-content{position:relative;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;background:#10182b}.window-content iframe{display:block;flex:1;width:100%;height:100%;min-height:0;min-width:0;border:0;background:#fff}.embed-help{padding:9px 12px;background:#1b2942;color:#cbd5ed;font-size:11px;border-bottom:1px solid var(--line)}.embed-loading{position:absolute;inset:0;display:grid;place-items:center;background:#10182b;color:#cbd5ed;font-size:13px;z-index:2;pointer-events:none}.embed-loading:before{content:"";width:23px;height:23px;border:3px solid #53617d;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}@keyframes spin{to{transform:rotate(360deg)}}.window-foot{min-height:31px;padding:7px 12px;color:#9aa5bf;background:#111a2e;border-top:1px solid var(--line);font-size:10px}.window-foot a{color:#c4baff}.window-panel{height:100%;overflow:auto;padding:clamp(16px,3vw,29px);color:var(--text)}
+.arcade-shell{color:#f4f5ff;max-width:900px;margin:0 auto}.arcade-nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.arcade-nav button{border:1px solid rgba(255,255,255,.12);background:#202842;color:#e8ebfa;border-radius:9px;padding:8px 12px}.arcade-nav button.active{background:#8571f3;color:#111426}.arcade-game{padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:#151f36}.game-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;max-width:360px;margin:16px auto;background:#26324e;padding:8px;border-radius:12px}.tile{aspect-ratio:1;border-radius:7px;display:grid;place-items:center;background:#34415f;font-weight:850;font-size:clamp(17px,4vw,25px)}.tile.v0{background:#202b43}.tile.v2{background:#e8e3d7;color:#293044}.tile.v4{background:#d9c9a8;color:#293044}.tile.v8{background:#efa86a;color:#273044}.tile.v16{background:#e98757;color:#fff}.tile.v32{background:#df684e;color:#fff}.tile.v64{background:#ca4c52;color:#fff}.tile.v128,.tile.v256,.tile.v512,.tile.v1024,.tile.v2048{background:#9278f4;color:#fff}.game-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}.game-actions button{border:0;border-radius:9px;padding:9px 13px;background:#8875f1;color:#111426;font-weight:800}.game-status{text-align:center;color:#b6c1d9;font-size:12px}.memory-grid{display:grid;grid-template-columns:repeat(4,minmax(55px,80px));gap:9px;justify-content:center;margin:18px auto}.memory-card{aspect-ratio:1;border:1px solid #56617b;border-radius:10px;background:#2b3854;font-size:23px}.memory-card.revealed{background:#4b437b}.reaction-pad{min-height:200px;width:100%;border:0;border-radius:13px;background:#9e4655;color:#fff;font-size:19px;font-weight:800}.reaction-pad.ready{background:#268d70}.calc{max-width:360px;margin:0 auto}.calc-display{width:100%;padding:18px;margin-bottom:10px;text-align:right;font-size:27px;border:1px solid #33415f;border-radius:12px;background:#0b1221;color:white}.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.calc-grid button{padding:14px 7px;border:0;border-radius:10px;background:#283550;color:white;font-size:17px}.calc-grid button.op{background:#4c467f}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,15px);padding:11px 16px;border:1px solid var(--line);border-radius:12px;background:#202b43;color:white;box-shadow:var(--shadow);font-size:12px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50}.toast.show{opacity:1;transform:translate(-50%,0)}
+.mobile-nav{display:none}.footer{padding:35px 0 8px;text-align:center;color:#73809f;font-size:10px}.footer strong{color:#aeb8d1}
+@media(max-width:900px){:root{--sidebar:210px}.main{padding-inline:25px}.app-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+@media(max-width:700px){.app-shell{display:block}.sidebar{display:none}.main{padding:17px 15px 90px}.topbar{margin-bottom:25px}.mobile-brand{display:block}.search-wrap{max-width:none}.topbar{flex-wrap:wrap}.mobile-brand{order:0}.search-wrap{order:2;flex-basis:100%}.top-actions{order:1}.clock{display:none}.network-pill{display:none}.hero{display:block}.hero-date{text-align:left;margin-top:10px}.feature{grid-template-columns:1fr}.feature-actions{justify-content:flex-start}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:17px}.app-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.app-card{min-height:139px;padding:14px}.mobile-nav{display:flex;position:fixed;z-index:10;bottom:9px;left:9px;right:9px;padding:7px;justify-content:space-around;border:1px solid var(--line);border-radius:17px;background:rgba(12,18,34,.94);backdrop-filter:blur(22px);box-shadow:var(--shadow)}.mobile-nav button{flex:1;min-width:0;border:0;background:transparent;color:var(--muted);font-size:clamp(8px,2.2vw,9px);padding:5px 2px;display:grid;gap:2px;justify-items:center}.mobile-nav button span{font-size:17px}.mobile-nav button.active{color:var(--text)}.window-backdrop{padding:0}.app-window{width:100%;height:100%;min-height:100%;border-radius:0;border:0}.window-head{padding:8px}.window-controls button{min-width:31px;padding:0 7px}.window-controls .word{display:none}.window-foot{font-size:9px}.form-row{align-items:stretch}.form-row .primary{padding-inline:11px}}
+@media(max-width:380px){.app-grid{grid-template-columns:1fr 1fr}.app-card{min-height:130px}.app-card .app-icon{width:38px;height:38px}.stats .stat span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body.compact .app-card{min-height:124px;padding:13px}body.compact .app-grid{gap:9px}body.compact .main{padding-top:16px}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="logo">NEXUS<span>.</span></div>
-  <div class="clock" id="clock"></div>
-</header>
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Main navigation">
+    <div class="brand"><div class="brand-mark">N</div><div>NEXUS<small>VERSION 3.4</small></div></div>
+    <div class="nav-label">Workspace</div>
+    <nav class="nav">
+      <button class="nav-btn active" data-view="home"><span class="nav-icon">⌂</span>Overview</button>
+      <button class="nav-btn" data-view="library"><span class="nav-icon">▦</span>App library</button>
+      <button class="nav-btn" data-view="arcade"><span class="nav-icon">♧</span>Arcade</button>
+      <button class="nav-btn" data-view="watchlist"><span class="nav-icon">▣</span>Watchlist</button>
+      <button class="nav-btn" data-view="notes"><span class="nav-icon">✎</span>Notes</button>
+    </nav>
+    <div class="nav-label">Personalize</div>
+    <nav class="nav"><button class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span>Settings</button></nav>
+    <div class="sidebar-bottom"><div class="side-note"><strong>✦ Made for your space</strong>Favorites, notes and settings stay saved in this browser.</div></div>
+  </aside>
 
-<main>
-  <section class="greeting">
-    <h1>Your space. Your world.</h1>
-    <p>Everything you need, all in one place.</p>
-  </section>
+  <main class="main">
+    <header class="topbar">
+      <div class="mobile-brand">NEXUS<span>.</span></div>
+      <div class="search-wrap"><span class="search-icon">⌕</span><input class="search" id="globalSearch" type="search" placeholder="Search your apps…  (press /)" autocomplete="off" aria-label="Search Nexus apps"><span class="shortcut">/</span></div>
+      <div class="top-actions"><span class="network-pill" id="networkStatus" role="status">Online</span><button class="icon-btn hidden" id="installApp" title="Install Nexus" aria-label="Install Nexus">⇩</button><div class="clock"><strong id="clockTime">--:--</strong><span id="clockDate">Loading date</span></div><button class="icon-btn" id="quickSettings" title="Open settings" aria-label="Open settings">⚙</button></div>
+    </header>
 
-  <input class="search" id="search" placeholder="Search apps, games and websites..." autocomplete="off">
+    <section class="view active" id="view-home">
+      <div class="hero"><div><div class="eyebrow">YOUR PERSONAL WEB SPACE</div><h1 id="greeting">Welcome to Nexus.</h1><p>A cleaner place for the things you use most.</p></div><div class="hero-date" id="longDate"></div></div>
+      <div class="feature"><div class="feature-copy"><div class="feature-tag">✦ Featured app</div><h2>🌸 AniSakura</h2><p>Open AniSakura inside your Nexus workspace. Its homepage was tested by you; individual video providers may still apply their own restrictions.</p></div><div class="feature-actions"><button class="primary" data-launch="anime">Open AniSakura ↗</button><button class="secondary" data-view="library">Browse apps</button></div></div>
+      <div class="stats"><div class="stat"><span>AVAILABLE APPS</span><strong id="statApps">6</strong></div><div class="stat"><span>YOUR FAVORITES</span><strong id="statFavorites">0</strong></div><div class="stat"><span>WATCHLIST ITEMS</span><strong id="statWatchlist">0</strong></div></div>
+      <div class="section-head"><div><h2>Quick launch</h2><p>Your built-in tools and apps</p></div><button class="text-btn" data-view="library">View library →</button></div>
+      <div class="app-grid" id="homeApps"></div>
+      <div class="section-head"><div><h2>Recently opened</h2><p>Pick up where you left off</p></div></div>
+      <div class="app-grid" id="recentApps"></div>
+    </section>
 
-  <section class="featured">
-    <div>
-      <h2>🌸 AniSakura</h2>
-      <p>Your anime destination, built directly into Nexus.</p>
-    </div>
-    <button class="primary" onclick="openApp('anime')">Open AniSakura ↗</button>
-  </section>
+    <section class="view" id="view-library">
+      <div class="hero"><div><div class="eyebrow">YOUR COLLECTION</div><h1>App library.</h1><p>One place for your embedded apps and built-in tools.</p></div></div>
+      <div class="library-toolbar" id="libraryFilters"><button class="chip active" data-filter="all">All apps</button><button class="chip" data-filter="media">Media</button><button class="chip" data-filter="games">Games</button><button class="chip" data-filter="tools">Tools</button><button class="chip" data-filter="favorites">Favorites</button></div>
+      <div class="app-grid" id="libraryApps"></div>
+    </section>
 
-  <div class="section-title">Your apps</div>
-  <div class="grid" id="apps"></div>
+    <section class="view" id="view-arcade">
+      <div class="hero"><div><div class="eyebrow">TAKE A BREAK</div><h1>Nexus Arcade.</h1><p>Small games included with Nexus. No external game site is required.</p></div></div>
+      <div class="content-panel"><div class="row"><div><h2>Built-in arcade</h2><p class="muted small">Three built-in games with game-over detection and saved personal bests.</p></div><button class="primary" data-launch="arcade">Open arcade ↗</button></div></div>
+      <div class="section-head"><h2>Arcade games</h2></div><div class="app-grid" id="arcadeCards"></div>
+    </section>
 
-  <div class="section-title">Favorites</div>
-  <div class="grid" id="favorites"></div>
+    <section class="view" id="view-watchlist">
+      <div class="hero"><div><div class="eyebrow">KEEP TRACK</div><h1>Watchlist.</h1><p>Save titles you want to come back to. This list stays on this device.</p></div></div>
+      <div class="content-panel"><h2>Your saved titles</h2><div class="form-row"><input class="field" id="watchInput" maxlength="120" placeholder="Add an anime or show…"><button class="primary" id="addWatch">Add title</button></div><div id="watchItems" style="margin-top:17px"></div></div>
+    </section>
 
-  <div class="section-title">Recently opened</div>
-  <div class="grid" id="recent"></div>
-</main>
+    <section class="view" id="view-notes">
+      <div class="hero"><div><div class="eyebrow">YOUR PRIVATE SCRATCHPAD</div><h1>Notes.</h1><p>Quick notes are saved in this browser as you type.</p></div></div>
+      <div class="content-panel"><div class="row" style="margin-bottom:12px"><h2 style="margin:0">My notes</h2><span class="muted small" id="noteStatus">Saved locally</span></div><textarea class="field" id="notesField" maxlength="20000" placeholder="Write something down…" aria-label="Your notes"></textarea></div>
+    </section>
 
-<footer>NEXUS 2.0 · Your personal web space</footer>
-
-<div class="window" id="window">
-  <div class="window-head">
-    <div class="window-title" id="windowTitle">Nexus</div>
-    <div class="window-actions">
-      <button class="secondary" id="refreshBtn" onclick="refreshFrame()">↻ Refresh</button>
-      <button class="secondary" id="backBtn" onclick="goBack()">← Back</button>
-      <button class="secondary" id="externalBtn" onclick="openExternal()">↗ Open separately</button>
-      <button class="secondary" onclick="fullscreen()">⛶</button>
-      <button class="secondary" onclick="closeWindow()">✕</button>
-    </div>
-  </div>
-  <div class="window-content" id="windowContent"></div>
-  <div class="notice" id="notice"></div>
+    <section class="view" id="view-settings">
+      <div class="hero"><div><div class="eyebrow">MAKE IT YOURS</div><h1>Settings.</h1><p>Personalize the look and manage your saved Nexus data.</p></div></div>
+      <div class="content-panel">
+        <div class="setting-group"><div class="setting-title">Accent color</div><div class="swatches" id="accentSwatches"></div></div>
+        <div class="setting-group"><div class="setting-title">Background</div><div class="wallpapers" id="wallpaperChoices"></div></div>
+        <div class="setting-group"><div class="setting-title">Display</div><label class="row small"><span>Compact app cards</span><input type="checkbox" id="compactToggle"></label></div>
+        <div class="setting-group"><div class="setting-title">Your data</div><p class="muted small">Export a backup of your favorites, recent apps, notes, watchlist, settings and arcade records. Importing replaces the current saved Nexus data on this browser.</p><div class="form-row" style="flex-wrap:wrap"><button class="secondary" id="exportData">↓ Export backup</button><button class="secondary" id="importButton">↑ Import backup</button><input class="hidden" type="file" id="importFile" accept="application/json,.json"><button class="danger" id="resetData">Reset Nexus data</button></div></div>
+        <div class="setting-group"><div class="setting-title">About Nexus</div><p class="muted small">Version 3.4 · Installable web app · Built-in games run locally; external sites still need network access. Your local data stays in this browser unless you export it.</p></div>
+      </div>
+    </section>
+    <footer class="footer"><strong>NEXUS 3.4</strong> · Built for your personal workspace</footer>
+  </main>
 </div>
 
-<div class="toast" id="toast"></div>
+<nav class="mobile-nav" aria-label="Mobile navigation"><button class="active" data-view="home"><span>⌂</span>Home</button><button data-view="library"><span>▦</span>Apps</button><button data-view="arcade"><span>♧</span>Arcade</button><button data-view="watchlist"><span>▣</span>List</button><button data-view="notes"><span>✎</span>Notes</button><button data-view="settings"><span>⚙</span>Settings</button></nav>
+
+<div class="window-backdrop" id="windowBackdrop" aria-hidden="true"><section class="app-window" id="appWindow" role="dialog" aria-modal="true" aria-labelledby="windowTitle" tabindex="-1"><div class="window-head"><div class="window-title"><span id="windowIcon">✦</span><span id="windowTitle">App</span></div><div class="window-controls"><button id="reloadApp" class="word" title="Reload app">↻ <span class="word">Reload</span></button><button id="openSeparate" class="word hidden" title="Open in a separate tab">↗ <span class="word">Separate tab</span></button><button id="fullScreen" title="Fullscreen">⛶</button><button id="closeWindow" title="Close app">✕</button></div></div><div class="window-content" id="windowContent"></div><div class="window-foot" id="windowFoot">Nexus app window</div></section></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-const APPS = [
-  {id:'anime',name:'AniSakura',icon:'🌸',desc:'Watch anime',url:'https://anisakura.xyz/',embed:true},
-  {id:'games',name:'Games',icon:'🎮',desc:'Browse game websites',panel:true},
-  {id:'web',name:'Web Apps',icon:'🌐',desc:'Useful websites',panel:true},
-  {id:'watchlist',name:'Watchlist',icon:'📺',desc:'Save anime and shows',panel:true},
-  {id:'settings',name:'Settings',icon:'⚙️',desc:'Customize Nexus',panel:true}
+'use strict';
+const APPS=[
+ {id:'anime',name:'AniSakura',icon:'🌸',description:'Anime website embedded in Nexus',category:'media',type:'external',url:'https://anisakura.xyz/',featured:true},
+ {id:'arcade',name:'Nexus Arcade',icon:'🎮',description:'2048, Memory and Reaction with saved records',category:'games',type:'arcade'},
+ {id:'notes',name:'Quick Notes',icon:'📝',description:'A local scratchpad that auto-saves',category:'tools',type:'notes'},
+ {id:'watchlist',name:'Watchlist',icon:'📺',description:'Keep a list of shows to watch',category:'media',type:'watchlist'},
+ {id:'calculator',name:'Calculator',icon:'🧮',description:'A simple built-in calculator',category:'tools',type:'calculator'},
+ {id:'focus',name:'Focus Timer',icon:'⏱️',description:'A simple focus and break timer',category:'tools',type:'focus'}
 ];
-
-const GAMES = [
-  {name:'Lichess',url:'https://lichess.org/',desc:'Online chess'},
-  {name:'Chess.com',url:'https://www.chess.com/',desc:'Play chess'},
-  {name:'itch.io',url:'https://itch.io/games/html5',desc:'Browser games'}
+const ACCENTS=[{name:'Violet',value:'#9a83ff',rgb:'154,131,255'},{name:'Cyan',value:'#55c5d8',rgb:'85,197,216'},{name:'Mint',value:'#59c6a3',rgb:'89,198,163'},{name:'Rose',value:'#ee86ad',rgb:'238,134,173'},{name:'Amber',value:'#eab267',rgb:'234,178,103'},{name:'Blue',value:'#6e9df7',rgb:'110,157,247'}];
+const WALLPAPERS=[
+ {name:'Midnight',a:'#171d3a',b:'#0b1020',c:'#152d3a'},
+ {name:'Aurora',a:'#26304b',b:'#101525',c:'#173f46'},
+ {name:'Amethyst',a:'#38234d',b:'#130e20',c:'#25234c'},
+ {name:'Ocean',a:'#142f4d',b:'#081522',c:'#16444b'},
+ {name:'Ember',a:'#472c36',b:'#160f18',c:'#493326'}
 ];
-
-const WEBSITES = [
-  {name:'Photopea',url:'https://www.photopea.com/',desc:'Online image editor'},
-  {name:'Wikipedia',url:'https://www.wikipedia.org/',desc:'Online encyclopedia'},
-  {name:'Neal.fun',url:'https://neal.fun/',desc:'Interactive experiments'}
-];
-
-let favorites = load('nexus_favorites',[]);
-let recent = load('nexus_recent',[]);
-let watchlist = load('nexus_watchlist',[]);
-let current = null;
-let currentUrl = null;
-
-function load(key,fallback) {
-  try {
-    const value = JSON.parse(localStorage.getItem(key));
-    return value ?? fallback;
-  } catch { return fallback; }
+const KEYS={favorites:'nexus3_favorites',recent:'nexus3_recent',watchlist:'nexus_watchlist',notes:'nexus3_notes',settings:'nexus3_settings',scores:'nexus3_scores'};
+const legacyFavorites=readJSON('nexus_favorites',[]),legacyRecent=readJSON('nexus_recent',[]);
+let state={
+ favorites:safeIdList(readJSON(KEYS.favorites,Array.isArray(legacyFavorites)?legacyFavorites.map(mapLegacyId):[])),
+ recent:safeIdList(readJSON(KEYS.recent,Array.isArray(legacyRecent)?legacyRecent.map(mapLegacyId):[])).slice(0,6),
+ watchlist:cleanStringList(readJSON(KEYS.watchlist,[])),
+ notes:readNotes(),
+ settings:loadSettings(),
+ scores:loadScores(readJSON(KEYS.scores,{}))
+};
+let activeView='home',activeApp=null,activeFilter='all',toastTimer=null,focusInterval=null,focusRemaining=25*60,focusRunning=false,focusMode='Focus',returnFocusEl=null,embedTimer=null,installPromptEvent=null;
+function mapLegacyId(id){return ({games:'arcade',web:null,anime:'anime',watchlist:'watchlist',settings:null})[id]??id}
+function readJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw===null?fallback:JSON.parse(raw)}catch{return fallback}}
+function readString(key,fallback){try{return localStorage.getItem(key)??fallback}catch{return fallback}}
+function readNotes(){const value=readJSON(KEYS.notes,'');return typeof value==='string'?value.slice(0,20000):''}
+function cleanStringList(value){return Array.isArray(value)?value.filter(x=>typeof x==='string').map(x=>x.trim().slice(0,120)).filter(Boolean).slice(0,300):[]}
+function safeIdList(value){return Array.isArray(value)?[...new Set(value.filter(id=>APPS.some(a=>a.id===id)))].slice(0,30):[]}
+function loadSettings(){const s=readJSON(KEYS.settings,{});const oldAccent=readString('nexus_accent','#9a83ff');return {accent:ACCENTS.some(a=>a.value===s.accent)?s.accent:(ACCENTS.some(a=>a.value===oldAccent)?oldAccent:'#9a83ff'),wallpaper:WALLPAPERS.some(w=>w.name===s.wallpaper)?s.wallpaper:'Midnight',compact:!!s.compact}}
+function loadScores(s){return {best2048:Number.isFinite(Number(s?.best2048))?Math.max(0,Math.floor(Number(s.best2048))):0,reactionBest:Number.isFinite(Number(s?.reactionBest))&&Number(s.reactionBest)>0?Math.floor(Number(s.reactionBest)):null}}
+function persist(){safeSave(KEYS.favorites,state.favorites);safeSave(KEYS.recent,state.recent);safeSave(KEYS.watchlist,state.watchlist);safeSave(KEYS.notes,state.notes);safeSave(KEYS.settings,state.settings);safeSave(KEYS.scores,state.scores)}
+function safeSave(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch{showToast('Could not save. Browser storage may be full or disabled.');return false}}
+function applySettings(){const a=ACCENTS.find(x=>x.value===state.settings.accent)||ACCENTS[0];document.documentElement.style.setProperty('--accent',a.value);document.documentElement.style.setProperty('--accent-rgb',a.rgb);const w=WALLPAPERS.find(x=>x.name===state.settings.wallpaper)||WALLPAPERS[0];document.documentElement.style.setProperty('--wall-a',w.a);document.documentElement.style.setProperty('--wall-b',w.b);document.documentElement.style.setProperty('--wall-c',w.c);document.body.classList.toggle('compact',state.settings.compact)}
+function showToast(message){const el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2400)}
+function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function appCard(app){
+ const card=document.createElement('article');card.className='app-card';
+ const open=document.createElement('button');open.className='app-open';open.type='button';open.setAttribute('aria-label','Open '+app.name);
+ open.innerHTML=`<span class="app-icon">${app.icon}</span><strong>${escapeHTML(app.name)}</strong><small>${escapeHTML(app.description)}</small>`;
+ open.addEventListener('click',()=>launchApp(app.id));
+ const fav=document.createElement('button');fav.className='favorite-btn'+(state.favorites.includes(app.id)?' is-favorite':'');fav.type='button';fav.title=state.favorites.includes(app.id)?'Remove favorite':'Add favorite';fav.setAttribute('aria-label',fav.title+' '+app.name);fav.textContent=state.favorites.includes(app.id)?'★':'☆';fav.addEventListener('click',()=>toggleFavorite(app.id));
+ card.append(open,fav);return card
 }
-
-function save(key,value) {
-  try { localStorage.setItem(key,JSON.stringify(value)); }
-  catch { notify('Your browser could not save this change.'); }
-}
-
-function notify(message) {
-  const el = document.getElementById('toast');
-  el.textContent = message;
-  el.style.display = 'block';
-  clearTimeout(window.toastTimer);
-  window.toastTimer = setTimeout(()=>el.style.display='none',2300);
-}
-
-function card(app) {
-  const isFav = favorites.includes(app.id);
-  return `<button class="app" onclick="openApp('${app.id}')">
-    <span class="app-icon">${app.icon}</span>
-    <span class="app-name">${app.name}</span>
-    <span class="app-desc">${app.desc}</span>
-    <span class="app-desc">${isFav?'★ Favorite':'☆ Add to favorites'}</span>
-  </button>`;
-}
-
-function render() {
-  const query = document.getElementById('search').value.toLowerCase().trim();
-  const filtered = APPS.filter(a=>(a.name+' '+a.desc).toLowerCase().includes(query));
-  document.getElementById('apps').innerHTML = filtered.map(card).join('') || '<div class="empty">No apps found.</div>';
-  document.getElementById('favorites').innerHTML = favorites.map(id=>APPS.find(a=>a.id===id)).filter(Boolean).map(card).join('') || '<div class="empty">Your favorites will appear here.</div>';
-  document.getElementById('recent').innerHTML = recent.map(id=>APPS.find(a=>a.id===id)).filter(Boolean).map(card).join('') || '<div class="empty">Your recently opened apps will appear here.</div>';
-}
-
-function remember(id) {
-  recent = [id,...recent.filter(x=>x!==id)].slice(0,5);
-  save('nexus_recent',recent);
-  render();
-}
-
-function openApp(id) {
-  const app = APPS.find(a=>a.id===id);
-  if(!app) return;
-  current = app;
-  currentUrl = app.url || null;
-  remember(id);
-
-  document.getElementById('window').classList.add('open');
-  document.getElementById('windowTitle').textContent = app.icon+' '+app.name;
-  document.getElementById('windowContent').innerHTML = '';
-  document.getElementById('notice').textContent = '';
-  document.getElementById('externalBtn').style.display = app.url ? 'inline-block':'none';
-  document.getElementById('refreshBtn').style.display = app.embed ? 'inline-block':'none';
-  document.getElementById('backBtn').style.display = app.embed ? 'inline-block':'none';
-
-  if(app.id==='anime') showFrame(app.url);
-  if(app.id==='games') showLinks(GAMES);
-  if(app.id==='web') showLinks(WEBSITES);
-  if(app.id==='watchlist') showWatchlist();
-  if(app.id==='settings') showSettings();
-}
-
-function showFrame(url) {
-  const frame = document.createElement('iframe');
-  frame.src = url;
-  frame.allow = 'fullscreen; autoplay; encrypted-media; picture-in-picture';
-  frame.allowFullscreen = true;
-  frame.referrerPolicy = 'strict-origin-when-cross-origin';
-  document.getElementById('windowContent').appendChild(frame);
-  document.getElementById('notice').textContent =
-    'If the site or a video player refuses to load here, use “Open separately”. Some third-party sites restrict embedding.';
-}
-
-function showLinks(items) {
-  const box = document.createElement('div');
-  box.className = 'panel-content';
-  box.innerHTML = '<h2>Explore</h2><p class="empty">Choose a website to open in a new tab.</p>';
-  items.forEach(item=>{
-    const row = document.createElement('div');
-    row.className='item';
-    const info=document.createElement('div');
-    const title=document.createElement('strong');
-    title.textContent=item.name;
-    const desc=document.createElement('div');
-    desc.className='empty';
-    desc.textContent=item.desc;
-    info.append(title,desc);
-    const btn=document.createElement('button');
-    btn.textContent='Open ↗';
-    btn.onclick=()=>window.open(item.url,'_blank','noopener,noreferrer');
-    row.append(info,btn);
-    box.appendChild(row);
-  });
-  document.getElementById('windowContent').appendChild(box);
-}
-
-function showWatchlist() {
-  const box=document.createElement('div');
-  box.className='panel-content';
-  box.innerHTML='<h2>My Watchlist</h2><p class="empty">Keep track of anime and shows you want to watch.</p>';
-  const input=document.createElement('input');
-  input.placeholder='Enter an anime or show title...';
-  input.id='watchInput';
-  const add=document.createElement('button');
-  add.className='primary';
-  add.textContent='Add to watchlist';
-  add.onclick=()=>{
-    const title=input.value.trim();
-    if(!title) return;
-    watchlist.push(title);
-    save('nexus_watchlist',watchlist);
-    openApp('watchlist');
-    notify('Added to your watchlist!');
-  };
-  box.append(input,add);
-  watchlist.forEach((title,index)=>{
-    const row=document.createElement('div');
-    row.className='item';
-    const name=document.createElement('span');
-    name.textContent=title;
-    const remove=document.createElement('button');
-    remove.textContent='Remove';
-    remove.onclick=()=>{
-      watchlist.splice(index,1);
-      save('nexus_watchlist',watchlist);
-      openApp('watchlist');
-    };
-    row.append(name,remove);
-    box.appendChild(row);
-  });
-  document.getElementById('windowContent').appendChild(box);
-}
-
-function showSettings() {
-  const box=document.createElement('div');
-  box.className='panel-content';
-  box.innerHTML='<h2>Customize Nexus</h2><p class="empty">Choose your accent color.</p>';
-  const colors=['#8b7cff','#36b8a0','#e77cae','#e6a34d','#5b9df5'];
-  colors.forEach(color=>{
-    const btn=document.createElement('button');
-    btn.style.cssText=`background:${color};width:38px;height:38px;border:0;border-radius:50%;margin:7px;cursor:pointer`;
-    btn.onclick=()=>{
-      document.documentElement.style.setProperty('--accent',color);
-      localStorage.setItem('nexus_accent',color);
-    };
-    box.appendChild(btn);
-  });
-  const reset=document.createElement('button');
-  reset.className='secondary';
-  reset.textContent='Reset saved Nexus data';
-  reset.style.display='block';
-  reset.style.marginTop='25px';
-  reset.onclick=()=>{
-    if(confirm('Delete your favorites, history and watchlist?')){
-      ['nexus_favorites','nexus_recent','nexus_watchlist'].forEach(k=>localStorage.removeItem(k));
-      favorites=[];recent=[];watchlist=[];
-      render();openApp('settings');notify('Nexus data reset.');
-    }
-  };
-  box.appendChild(reset);
-  document.getElementById('windowContent').appendChild(box);
-}
-
-function closeWindow() {
-  document.getElementById('window').classList.remove('open');
-  document.getElementById('windowContent').innerHTML='';
-  current=null;
-}
-
-function refreshFrame() {
-  const frame=document.querySelector('#windowContent iframe');
-  if(frame) frame.src=frame.src;
-}
-
-function goBack() {
-  notify('Browser history is controlled by the embedded website. Use its own back button if available.');
-}
-
-function openExternal() {
-  if(currentUrl) window.open(currentUrl,'_blank','noopener,noreferrer');
-}
-
-function fullscreen() {
-  const frame=document.querySelector('#windowContent iframe');
-  if(frame && frame.requestFullscreen) frame.requestFullscreen();
-  else document.getElementById('window').requestFullscreen?.();
-}
-
-document.getElementById('search').addEventListener('input',render);
-
-document.getElementById('clock').textContent='';
-function updateClock() {
-  document.getElementById('clock').textContent =
-    new Date().toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-}
-updateClock();
-setInterval(updateClock,30000);
-
-const savedAccent=localStorage.getItem('nexus_accent');
-if(savedAccent) document.documentElement.style.setProperty('--accent',savedAccent);
-
-render();
+function fillGrid(id,apps,emptyText){const el=document.getElementById(id);el.replaceChildren();if(!apps.length){const empty=document.createElement('div');empty.className='empty';empty.textContent=emptyText;el.appendChild(empty);return}apps.forEach(app=>el.appendChild(appCard(app)))}
+function render(){const q=document.getElementById('globalSearch').value.trim().toLowerCase();const shown=APPS.filter(a=>(a.name+' '+a.description+' '+a.category).toLowerCase().includes(q));fillGrid('homeApps',APPS.filter(a=>a.id!=='focus').slice(0,5),'No quick-launch apps yet.');fillGrid('recentApps',state.recent.map(id=>APPS.find(a=>a.id===id)).filter(Boolean),'Apps you open will show up here.');fillGrid('libraryApps',shown.filter(a=>activeFilter==='all'||(activeFilter==='favorites'?state.favorites.includes(a.id):a.category===activeFilter)),'No apps match this filter.');fillGrid('arcadeCards',APPS.filter(a=>a.id==='arcade'||a.id==='calculator'||a.id==='focus'),'No games available.');document.getElementById('statApps').textContent=APPS.length;document.getElementById('statFavorites').textContent=state.favorites.length;document.getElementById('statWatchlist').textContent=state.watchlist.length;renderWatchlist();document.getElementById('notesField').value=state.notes}
+function toggleFavorite(id){state.favorites=state.favorites.includes(id)?state.favorites.filter(x=>x!==id):[...state.favorites,id];persist();render();showToast(state.favorites.includes(id)?'Added to favorites':'Removed from favorites')}
+function remember(id){state.recent=[id,...state.recent.filter(x=>x!==id)].slice(0,6);persist();render()}
+function navigate(view){if(!document.getElementById('view-'+view))return;activeView=view;document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+view));document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===view));if(view==='settings')renderSettings();if(view==='watchlist')renderWatchlist();if(view==='notes')document.getElementById('notesField').value=state.notes;window.scrollTo({top:0,behavior:'smooth'})}
+function launchApp(id){const app=APPS.find(a=>a.id===id);if(!app)return;remember(id);returnFocusEl=document.activeElement;activeApp=app;document.getElementById('windowIcon').textContent=app.icon;document.getElementById('windowTitle').textContent=app.name;document.getElementById('windowContent').replaceChildren();document.getElementById('windowFoot').textContent='Nexus · '+app.name;const backdrop=document.getElementById('windowBackdrop');backdrop.classList.add('open');backdrop.setAttribute('aria-hidden','false');document.querySelector('.app-shell').inert=true;document.querySelector('.mobile-nav').inert=true;document.body.style.overflow='hidden';document.getElementById('openSeparate').classList.toggle('hidden',!app.url);document.getElementById('reloadApp').classList.toggle('hidden',app.type!=='external');
+ if(app.type==='external')mountExternal(app);else if(app.type==='arcade')mountArcade();else if(app.type==='notes')mountNotes();else if(app.type==='watchlist')mountWatchlist();else if(app.type==='calculator')mountCalculator();else if(app.type==='focus')mountFocus();document.getElementById('closeWindow').focus()}
+function mountExternal(app){const content=document.getElementById('windowContent');const help=document.createElement('div');help.className='embed-help';help.setAttribute('role','status');help.setAttribute('aria-live','polite');help.textContent='Loading '+app.name+'… If this stays blank, the site may refuse iframe embedding or the network may block its host. Nexus cannot override either restriction.';const loading=document.createElement('div');loading.className='embed-loading';loading.setAttribute('aria-hidden','true');loading.textContent='Loading '+app.name+'…';const frame=document.createElement('iframe');frame.title=app.name;frame.src=app.url;frame.loading='eager';frame.referrerPolicy='strict-origin-when-cross-origin';frame.allow='fullscreen; autoplay; encrypted-media; picture-in-picture';frame.allowFullscreen=true;frame.addEventListener('load',()=>{if(embedTimer){clearTimeout(embedTimer);embedTimer=null}loading.remove();help.textContent='The browser completed the iframe navigation. If the content is blank, the site may have refused embedding; use “Separate tab” to check the official page.';});content.append(help,frame,loading);embedTimer=setTimeout(()=>{loading.remove();help.textContent='Still waiting for the embedded page. It may be slow, unavailable, blocked by the network, or refusing iframe embedding.';embedTimer=null},12000);document.getElementById('windowFoot').textContent='Embedded third-party content · external site policies and network access still apply.'}
+function mountFrame(title,html){const frame=document.createElement('iframe');frame.title=title;frame.setAttribute('sandbox','allow-scripts allow-forms');frame.srcdoc=html;frame.addEventListener('load',()=>{if(title==='Nexus Arcade')frame.contentWindow.postMessage({type:'nexus-arcade-load',scores:state.scores},'*')});document.getElementById('windowContent').appendChild(frame)}
+function closeApp(){const backdrop=document.getElementById('windowBackdrop');backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');document.querySelector('.app-shell').inert=false;document.querySelector('.mobile-nav').inert=false;document.getElementById('windowContent').replaceChildren();document.body.style.overflow='';if(embedTimer){clearTimeout(embedTimer);embedTimer=null}if(focusInterval){clearInterval(focusInterval);focusInterval=null}focusRunning=false;activeApp=null;if(returnFocusEl&&typeof returnFocusEl.focus==='function')returnFocusEl.focus();returnFocusEl=null}
+function reloadApp(){if(activeApp?.type==='external'){if(embedTimer){clearTimeout(embedTimer);embedTimer=null}document.getElementById('windowContent').replaceChildren();mountExternal(activeApp)}}
+function openSeparate(){if(activeApp?.url)window.open(activeApp.url,'_blank','noopener,noreferrer')}
+function fullscreenApp(){const target=document.getElementById('appWindow');if(!document.fullscreenElement)target.requestFullscreen?.().catch(()=>{});else document.exitFullscreen?.()}
+function mountNotes(){const panel=document.createElement('div');panel.className='window-panel';panel.innerHTML='<h2>Quick Notes</h2><p class="muted small">This scratchpad saves automatically in this browser.</p><textarea class="field" id="windowNotes" style="min-height:65vh"></textarea><div class="muted small" id="windowNoteStatus" style="margin-top:8px">Saved locally</div>';document.getElementById('windowContent').appendChild(panel);const t=panel.querySelector('#windowNotes');t.value=state.notes;t.addEventListener('input',()=>{state.notes=t.value;safeSave(KEYS.notes,state.notes);document.getElementById('windowNoteStatus').textContent='Saved';document.getElementById('notesField').value=state.notes})}
+function renderWatchlist(){const el=document.getElementById('watchItems');if(!el)return;el.replaceChildren();if(!state.watchlist.length){const e=document.createElement('div');e.className='empty';e.textContent='Your list is empty. Add a title above.';el.appendChild(e);return}state.watchlist.forEach((name,index)=>{const row=document.createElement('div');row.className='watch-item';const icon=document.createElement('span');icon.textContent='▣';const title=document.createElement('div');title.className='item-name';const strong=document.createElement('strong');strong.textContent=name;title.appendChild(strong);const btn=document.createElement('button');btn.className='mini-btn';btn.textContent='Remove';btn.addEventListener('click',()=>{state.watchlist.splice(index,1);persist();renderWatchlist();render()});row.append(icon,title,btn);el.appendChild(row)})}
+function addWatch(){const input=document.getElementById('watchInput');const value=input.value.trim();if(!value)return;if(state.watchlist.some(x=>x.toLowerCase()===value.toLowerCase())){showToast('That title is already on your list');return}state.watchlist.push(value.slice(0,120));persist();input.value='';renderWatchlist();render();showToast('Added to watchlist')}
+function mountWatchlist(){const panel=document.createElement('div');panel.className='window-panel';panel.innerHTML='<h2>Watchlist</h2><p class="muted small">Add titles and keep your list handy.</p><div class="form-row"><input class="field" id="modalWatchInput" maxlength="120" placeholder="Anime or show title"><button class="primary" id="modalWatchAdd">Add</button></div><div id="modalWatchItems" style="margin-top:17px"></div>';document.getElementById('windowContent').appendChild(panel);const input=panel.querySelector('#modalWatchInput');panel.querySelector('#modalWatchAdd').addEventListener('click',()=>{const v=input.value.trim();if(!v)return; if(state.watchlist.some(x=>x.toLowerCase()===v.toLowerCase())){showToast('Already on your list');return}state.watchlist.push(v.slice(0,120));persist();input.value='';draw();render();});function draw(){const list=panel.querySelector('#modalWatchItems');list.replaceChildren();if(!state.watchlist.length){list.textContent='Your list is empty.';list.className='empty';return}list.className='';state.watchlist.forEach((v,i)=>{const row=document.createElement('div');row.className='watch-item';const name=document.createElement('div');name.className='item-name';name.textContent=v;const btn=document.createElement('button');btn.className='mini-btn';btn.textContent='Remove';btn.onclick=()=>{state.watchlist.splice(i,1);persist();draw();render()};row.append(name,btn);list.append(row)})}draw()}
+function renderSettings(){const sw=document.getElementById('accentSwatches');sw.replaceChildren();ACCENTS.forEach(a=>{const b=document.createElement('button');b.className='swatch';b.style.background=a.value;b.title=a.name;b.setAttribute('aria-label',a.name+' accent');b.setAttribute('aria-pressed',String(state.settings.accent===a.value));b.onclick=()=>{state.settings.accent=a.value;persist();applySettings();renderSettings()};sw.appendChild(b)});const wp=document.getElementById('wallpaperChoices');wp.replaceChildren();WALLPAPERS.forEach(w=>{const b=document.createElement('button');b.className='wallpaper';b.title=w.name;b.setAttribute('aria-label',w.name+' background');b.setAttribute('aria-pressed',String(state.settings.wallpaper===w.name));b.style.background=`radial-gradient(circle at 20% 20%,${w.a},transparent 65%),linear-gradient(135deg,${w.b},${w.c})`;b.onclick=()=>{state.settings.wallpaper=w.name;persist();applySettings();renderSettings()};wp.appendChild(b)});document.getElementById('compactToggle').checked=state.settings.compact}
+function mountCalculator(){const html=`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:22px;background:#10182b;color:#f5f6ff;font:14px system-ui}.calc{max-width:370px;margin:5vh auto}.display{width:100%;box-sizing:border-box;padding:20px 14px;background:#090f1d;border:1px solid #34415f;border-radius:13px;color:white;text-align:right;font-size:28px;margin-bottom:10px}.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.keys button{border:0;border-radius:10px;padding:17px 5px;background:#2b3854;color:white;font-size:17px}.keys button.op{background:#62549e}.keys button.eq{background:#9a83ff;color:#141326}p{color:#9ba5c1;text-align:center;font-size:11px}</style></head><body><div class="calc"><input class="display" id="d" value="0" readonly><div class="keys" id="k"></div><p>Built into Nexus · Calculations stay in this tab</p></div><script>let exp='';const d=document.getElementById('d');const keys=['C','±','%','÷','7','8','9','×','4','5','6','−','1','2','3','+','0','.','⌫','='];function show(){d.value=exp||'0'}keys.forEach(k=>{let b=document.createElement('button');b.textContent=k;if(['÷','×','−','+','%'].includes(k))b.className='op';if(k==='=')b.className='eq';b.onclick=()=>{if(k==='C')exp='';else if(k==='⌫')exp=exp.slice(0,-1);else if(k==='±')exp=exp.startsWith('-')?exp.slice(1):'-'+exp;else if(k==='='){try{let e=exp.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/%/g,'/100');if(!/^[0-9+*/.() -]+$/.test(e))throw 0;let n=Function('return ('+e+')')();exp=Number.isFinite(n)?String(Number(n.toFixed(8))):''}catch{exp='';d.value='Error';return}}else exp+=k;show()};document.getElementById('k').append(b)});<\/script></body></html>`;mountFrame('Nexus Calculator',html)}
+function mountFocus(){const panel=document.createElement('div');panel.className='window-panel';panel.innerHTML='<div style="max-width:520px;margin:35px auto;text-align:center"><div class="eyebrow">FOCUS SESSION</div><h2 id="focusModeLabel" style="font-size:21px">Focus</h2><div id="focusClock" style="font-size:clamp(58px,12vw,90px);font-weight:850;letter-spacing:-4px;font-variant-numeric:tabular-nums;margin:24px 0">25:00</div><div class="game-actions"><button id="focusToggle" class="primary">Start</button><button id="focusReset" class="secondary">Reset</button></div><div class="game-actions"><button class="secondary" data-min="25">25 min focus</button><button class="secondary" data-min="5">5 min break</button><button class="secondary" data-min="15">15 min break</button></div><p class="muted small">The timer runs while Nexus stays open in this browser.</p></div>';document.getElementById('windowContent').appendChild(panel);panel.querySelector('#focusToggle').onclick=()=>{focusRunning=!focusRunning;panel.querySelector('#focusToggle').textContent=focusRunning?'Pause':'Start';if(focusRunning&&!focusInterval)focusInterval=setInterval(()=>{if(!focusRunning)return;if(focusRemaining>0)focusRemaining--;update();if(focusRemaining===0){focusRunning=false;clearInterval(focusInterval);focusInterval=null;panel.querySelector('#focusToggle').textContent='Start';showToast('Session complete!')}} ,1000)};panel.querySelector('#focusReset').onclick=()=>{focusRunning=false;focusRemaining=(focusMode==='Focus'?25:focusMode==='Short break'?5:15)*60;panel.querySelector('#focusToggle').textContent='Start';update()};panel.querySelectorAll('[data-min]').forEach(b=>b.onclick=()=>{focusRunning=false;focusInterval&&clearInterval(focusInterval);focusInterval=null;const m=Number(b.dataset.min);focusRemaining=m*60;focusMode=m===25?'Focus':m===5?'Short break':'Long break';panel.querySelector('#focusModeLabel').textContent=focusMode;panel.querySelector('#focusToggle').textContent='Start';update()});function update(){panel.querySelector('#focusClock').textContent=String(Math.floor(focusRemaining/60)).padStart(2,'0')+':'+String(focusRemaining%60).padStart(2,'0')}update()}
+function mountArcade(){const html=`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:18px;background:#10182b;color:#f4f5ff;font:14px system-ui}.shell{max-width:850px;margin:auto}.muted{color:#aab5cf;font-size:12px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:15px 0}.tabs button,.act{border:1px solid #44506b;border-radius:9px;background:#202d48;color:white;padding:9px 13px}.tabs button.active,.act{background:#8d79f0;border-color:#8d79f0;color:#111426;font-weight:800}.game{padding:15px;background:#17223a;border:1px solid #34415a;border-radius:15px;text-align:center}.board{width:min(100%,360px);display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:8px;background:#26324b;border-radius:12px;margin:14px auto}.tile{aspect-ratio:1;border-radius:7px;background:#35415b;display:grid;place-items:center;font-size:clamp(17px,4vw,25px);font-weight:850}.tile.v0{background:#202a40}.tile.v2{background:#e8e3d7;color:#273047}.tile.v4{background:#d9c9a8;color:#273047}.tile.v8{background:#efa86a;color:#273047}.tile.v16{background:#e98757}.tile.v32{background:#df684e}.tile.v64{background:#ca4c52}.tile.v128,.tile.v256,.tile.v512,.tile.v1024,.tile.v2048{background:#9278f4}.score{font-size:12px;color:#bec8dc}.memory{display:grid;grid-template-columns:repeat(4,minmax(48px,74px));gap:8px;justify-content:center;margin:18px auto}.memory button{aspect-ratio:1;border:1px solid #596783;border-radius:9px;background:#2a3854;color:white;font-size:22px}.memory button.open{background:#62539d}.reaction{width:100%;min-height:190px;border:0;border-radius:12px;background:#9e4655;color:white;font-size:18px;font-weight:800}.reaction.ready{background:#268d70}.small{font-size:11px;color:#aab5cf}.result{margin:12px auto;padding:10px;border-radius:9px;background:#202d48;color:#e7eaff;max-width:400px}</style></head><body><div class="shell"><h2>Nexus Arcade</h2><p class="muted">Built-in games that run locally inside Nexus. Use arrow keys or WASD for 2048.</p><div class="tabs"><button class="active" data-game="2048">2048</button><button data-game="memory">Memory</button><button data-game="reaction">Reaction</button></div><div id="stage"></div></div><script>
+const stage=document.getElementById('stage');let game='2048',grid=[],score=0,over=false,won=false,opened=[],matched=[],tries=0,reactionState='idle',started=0,waiter=null,memoryTimeout=null,best2048=0,bestReaction=null;
+function saveScores(){parent.postMessage({type:'nexus-arcade-save',best2048,reactionBest:bestReaction},'*')}
+window.addEventListener('message',e=>{if(e.data?.type==='nexus-arcade-load'){best2048=Number(e.data.scores?.best2048)||0;bestReaction=Number(e.data.scores?.reactionBest)||null;if(game==='2048')draw2048()}});
+function choose(g){if(waiter){clearTimeout(waiter);waiter=null}if(memoryTimeout){clearTimeout(memoryTimeout);memoryTimeout=null}game=g;document.querySelectorAll('[data-game]').forEach(b=>b.classList.toggle('active',b.dataset.game===g));if(g==='2048')draw2048();if(g==='memory')drawMemory();if(g==='reaction')drawReaction()}
+function fresh2048(){grid=Array(16).fill(0);score=0;over=false;won=false;spawn();spawn();draw2048()}
+function spawn(){const z=grid.map((v,i)=>v?null:i).filter(v=>v!==null);if(z.length)grid[z[Math.floor(Math.random()*z.length)]]=Math.random()<.9?2:4}
+function hasMoves(){if(grid.some(v=>v===0))return true;for(let r=0;r<4;r++)for(let c=0;c<4;c++){const i=r*4+c;if(c<3&&grid[i]===grid[i+1])return true;if(r<3&&grid[i]===grid[i+4])return true}return false}
+function draw2048(){const gained=score>best2048;if(gained){best2048=score;saveScores()}const notice=over?'No more valid moves. Game over. Start a new game to play again.':won?'You reached 2048! Keep playing or start a new game.':'Combine matching tiles to reach 2048.';stage.innerHTML='<div class="game"><div class="score">Score: '+score+' · Best: '+best2048+'</div><div class="board" role="grid" aria-label="2048 board">'+grid.map(v=>'<div class="tile v'+(v||0)+'" role="gridcell">'+(v||'')+'</div>').join('')+'</div><p class="small">'+notice+'</p><button class="act" id="restart">New game</button><p class="small">Swipe on mobile or use arrow keys / WASD.</p></div>';document.getElementById('restart').onclick=fresh2048}
+function move(dir){if(game!=='2048'||over)return;const old=grid.join(',');for(let r=0;r<4;r++){const ids=[];for(let c=0;c<4;c++)ids.push(dir==='left'||dir==='right'?r*4+c:c*4+r);if(dir==='right'||dir==='down')ids.reverse();let vals=ids.map(i=>grid[i]).filter(Boolean);for(let j=0;j<vals.length-1;j++){if(vals[j]===vals[j+1]){vals[j]*=2;score+=vals[j];vals.splice(j+1,1)}}while(vals.length<4)vals.push(0);ids.forEach((id,j)=>grid[id]=vals[j])}if(old!==grid.join(',')){spawn();if(grid.includes(2048))won=true;over=!hasMoves();draw2048()}}
+window.addEventListener('keydown',e=>{if(game!=='2048'||/input|textarea|select/i.test(e.target.tagName))return;const key=e.key.toLowerCase(),map={arrowleft:'left',a:'left',arrowright:'right',d:'right',arrowup:'up',w:'up',arrowdown:'down',s:'down'};if(map[key]){e.preventDefault();move(map[key])}});
+let touchStart=null;stage.addEventListener('touchstart',e=>{if(e.touches.length===1)touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});stage.addEventListener('touchend',e=>{if(!touchStart||!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;touchStart=null;if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;move(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'))},{passive:true});
+function drawMemory(){if(memoryTimeout){clearTimeout(memoryTimeout);memoryTimeout=null}const icons=['🍓','🚀','🐱','🌙','🎧','⚽','🌈','🍀'];const deck=[...icons,...icons].sort(()=>Math.random()-.5);opened=[];matched=[];tries=0;stage.innerHTML='<div class="game"><div class="score" id="tries">Moves: 0 · Pairs: 0/8</div><div class="memory" id="mem">'+deck.map((v,i)=>'<button data-i="'+i+'" aria-label="Hidden card">?</button>').join('')+'</div><button class="act" id="memReset">Shuffle</button></div>';document.getElementById('memReset').onclick=drawMemory;document.querySelectorAll('#mem button').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.i);if(matched.includes(i)||opened.includes(i)||opened.length===2)return;b.textContent=deck[i];b.setAttribute('aria-label',deck[i]);b.classList.add('open');opened.push(i);if(opened.length===2){tries++;document.getElementById('tries').textContent='Moves: '+tries+' · Pairs: '+(matched.length/2)+'/8';if(deck[opened[0]]===deck[opened[1]]){matched.push(...opened);opened=[];document.getElementById('tries').textContent='Moves: '+tries+' · Pairs: '+(matched.length/2)+'/8';if(matched.length===16){const done=document.createElement('div');done.className='result';done.textContent='You matched every pair in '+tries+' moves!';stage.querySelector('.game').append(done)}}else{const prev=[...opened];memoryTimeout=setTimeout(()=>{prev.forEach(n=>{const el=document.querySelector('#mem [data-i="'+n+'"]');if(el){el.textContent='?';el.setAttribute('aria-label','Hidden card');el.classList.remove('open')}});opened=[];memoryTimeout=null},650)}}})}
+function drawReaction(){if(waiter){clearTimeout(waiter);waiter=null}reactionState='idle';stage.innerHTML='<div class="game"><p class="score">Wait for green, then click as quickly as you can.</p><button class="reaction" id="react">Start test</button><div class="result" id="reactMsg">'+(bestReaction?'Personal best: '+bestReaction+' ms':'No personal best yet')+'</div></div>';const b=document.getElementById('react'),m=document.getElementById('reactMsg');b.onclick=()=>{if(reactionState==='idle'||reactionState==='result'){reactionState='wait';b.textContent='Wait for green…';b.classList.remove('ready');m.textContent='Wait for green. Clicking early resets the test.';waiter=setTimeout(()=>{if(reactionState!=='wait')return;reactionState='ready';started=performance.now();b.textContent='CLICK NOW!';b.classList.add('ready')},1000+Math.random()*2500)}else if(reactionState==='wait'){clearTimeout(waiter);waiter=null;reactionState='result';b.textContent='Too early — try again';m.textContent='False start. Wait until the button turns green.'}else if(reactionState==='ready'){const ms=Math.round(performance.now()-started);reactionState='result';b.textContent='Try again';b.classList.remove('ready');if(bestReaction===null||ms<bestReaction){bestReaction=ms;saveScores();m.textContent='New personal best: '+ms+' ms!'}else m.textContent='Your time: '+ms+' ms · Personal best: '+bestReaction+' ms'}}}
+document.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>choose(b.dataset.game));fresh2048();
+<\/script></body></html>`;mountFrame('Nexus Arcade',html)}
+function exportBackup(){const payload={product:'Nexus',version:3.4,exportedAt:new Date().toISOString(),data:{favorites:state.favorites,recent:state.recent,watchlist:state.watchlist,notes:state.notes,settings:state.settings,scores:state.scores}};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='nexus-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('Backup exported')}
+function importBackup(file){const reader=new FileReader();reader.onload=()=>{try{const obj=JSON.parse(reader.result);const d=obj?.data;if(!d||typeof d!=='object')throw new Error('Invalid backup');state.favorites=safeIdList(d.favorites);state.recent=safeIdList(d.recent).slice(0,6);state.watchlist=cleanStringList(d.watchlist);state.notes=typeof d.notes==='string'?d.notes.slice(0,20000):'';const s=d.settings||{};state.settings={accent:ACCENTS.some(a=>a.value===s.accent)?s.accent:'#9a83ff',wallpaper:WALLPAPERS.some(w=>w.name===s.wallpaper)?s.wallpaper:'Midnight',compact:!!s.compact};state.scores=loadScores(d.scores||{});persist();applySettings();render();renderSettings();showToast('Backup restored')}catch{showToast('That backup file is not valid Nexus data')}};reader.readAsText(file)}
+function resetData(){if(!confirm('Reset your Nexus favorites, recent apps, notes, watchlist and appearance settings on this browser?'))return;state={favorites:[],recent:[],watchlist:[],notes:'',settings:{accent:'#9a83ff',wallpaper:'Midnight',compact:false},scores:{best2048:0,reactionBest:null}};persist();applySettings();render();renderSettings();document.getElementById('notesField').value='';showToast('Nexus data reset')}
+window.addEventListener('message',e=>{const frame=document.querySelector('#windowContent iframe');if(!frame||e.source!==frame.contentWindow||!e.data||e.data.type!=='nexus-arcade-save')return;state.scores=loadScores({best2048:e.data.best2048,reactionBest:e.data.reactionBest});safeSave(KEYS.scores,state.scores)});
+function updateClock(){const d=new Date();document.getElementById('clockTime').textContent=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});document.getElementById('clockDate').textContent=d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});document.getElementById('longDate').textContent=d.toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});const h=d.getHours();document.getElementById('greeting').textContent=h<12?'Good morning.':h<18?'Good afternoon.':'Good evening.'}
+// Navigation and application controls
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));
+document.querySelectorAll('[data-launch]').forEach(b=>b.addEventListener('click',()=>launchApp(b.dataset.launch)));
+document.getElementById('quickSettings').addEventListener('click',()=>navigate('settings'));
+document.getElementById('globalSearch').addEventListener('input',()=>{activeFilter='all';document.querySelectorAll('#libraryFilters .chip').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));render();if(document.getElementById('globalSearch').value.trim())navigate('library')});
+document.getElementById('libraryFilters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(!b)return;activeFilter=b.dataset.filter;document.querySelectorAll('#libraryFilters .chip').forEach(x=>x.classList.toggle('active',x===b));render()});
+document.getElementById('closeWindow').addEventListener('click',closeApp);document.getElementById('windowBackdrop').addEventListener('click',e=>{if(e.target.id==='windowBackdrop')closeApp()});document.getElementById('reloadApp').addEventListener('click',reloadApp);document.getElementById('openSeparate').addEventListener('click',openSeparate);document.getElementById('fullScreen').addEventListener('click',fullscreenApp);
+document.getElementById('addWatch').addEventListener('click',addWatch);document.getElementById('watchInput').addEventListener('keydown',e=>{if(e.key==='Enter')addWatch()});
+document.getElementById('notesField').addEventListener('input',e=>{state.notes=e.target.value;safeSave(KEYS.notes,state.notes);document.getElementById('noteStatus').textContent='Saved'});
+document.getElementById('compactToggle').addEventListener('change',e=>{state.settings.compact=e.target.checked;persist();applySettings()});document.getElementById('exportData').addEventListener('click',exportBackup);document.getElementById('importButton').addEventListener('click',()=>document.getElementById('importFile').click());document.getElementById('importFile').addEventListener('change',e=>{const f=e.target.files?.[0];if(f)importBackup(f);e.target.value=''});document.getElementById('resetData').addEventListener('click',resetData);
+document.addEventListener('keydown',e=>{const modalOpen=document.getElementById('windowBackdrop').classList.contains('open');if(e.key==='Escape'&&modalOpen){closeApp();return}if(modalOpen&&e.key==='Tab'){const dlg=document.getElementById('appWindow');const nodes=[...dlg.querySelectorAll('button:not(:disabled):not(.hidden),a[href],input:not(:disabled),textarea:not(:disabled),select:not(:disabled),iframe,[tabindex]:not([tabindex="-1"])')].filter(el=>el.offsetParent!==null);if(!nodes.length){e.preventDefault();dlg.focus()}else if(e.shiftKey&&document.activeElement===nodes[0]){e.preventDefault();nodes[nodes.length-1].focus()}else if(!e.shiftKey&&document.activeElement===nodes[nodes.length-1]){e.preventDefault();nodes[0].focus()}}if(e.key==='/'&&!/input|textarea|select/i.test(document.activeElement.tagName)&&!modalOpen){e.preventDefault();document.getElementById('globalSearch').focus()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&!modalOpen){e.preventDefault();document.getElementById('globalSearch').focus()}});
+function updateNetworkStatus(){const el=document.getElementById('networkStatus');if(!el)return;const online=navigator.onLine;el.textContent=online?'Network online':'Offline';el.title='This reports your device network state, not whether a specific website is reachable.';el.classList.toggle('offline',!online)}
+window.addEventListener('online',updateNetworkStatus);window.addEventListener('offline',updateNetworkStatus);updateNetworkStatus();
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPromptEvent=e;const b=document.getElementById('installApp');b.classList.remove('hidden');b.title='Install Nexus';b.setAttribute('aria-label','Install Nexus')});
+document.getElementById('installApp').addEventListener('click',async()=>{if(!installPromptEvent){showToast('Use your browser menu to install or add Nexus to your home screen.');return}installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;document.getElementById('installApp').classList.add('hidden')});
+window.addEventListener('appinstalled',()=>{document.getElementById('installApp').classList.add('hidden');showToast('Nexus installed')});
+applySettings();updateClock();setInterval(updateClock,30000);render();renderSettings();persist();
 </script>
 </body>
 </html>
